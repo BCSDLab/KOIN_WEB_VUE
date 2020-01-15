@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "NanumBarunGothic";
+  src: url('./fonts/NanumBarunGothic.ttf') format('ttf');
+}
+
+@font-face {
+  font-family: "NanumSquare";
+  src: url('./fonts/NanumSquareR.ttf') format('ttf');
+}
