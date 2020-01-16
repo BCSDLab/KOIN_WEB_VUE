@@ -43,7 +43,7 @@
           중복확인
         </button>
       </div>
-      <div v-if="signUpIdentity === 0 || signUpIdentity === 1">
+      <div v-if="signUpIdentity !== 5">
         <div class="student-number">
           <input
             type="text"
@@ -52,7 +52,7 @@
             :disabled="this.$session.get('userInfo').student_number !== null">
         </div>
       </div>
-      <div v-else-if="signUpIdentity === 4">
+      <div v-else-if="signUpIdentity === 5">
         <div class="email">
           <input
             type="email"
@@ -68,7 +68,7 @@
           v-model="phoneNumber"
           placeholder="전화번호 (Ex: 010-0000-0000) (선택)">
       </div>
-      <div v-if="signUpIdentity === 0 || signUpIdentity === 1">
+      <div v-if="signUpIdentity !== 5">
         <div class="select-list">
           <div class="select-major">
             <div class="dropdown">
@@ -564,9 +564,6 @@
     border-bottom: none;
   }
 
-  .dropdown:active .dropdown-list {
-    display: block;
-  }
 
   .change-info-button {
     width: 390px;

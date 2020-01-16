@@ -177,7 +177,7 @@
       },
       // 등록하기 누르기
       registerPromotion() {
-        if(this.$session.get('userInfo') !== undefined && this.$session.get('userInfo').identity === 4) {
+        if(this.$session.get('userInfo') !== undefined && this.$session.get('userInfo').identity === 5) {
           this.$store.dispatch('checkMyPromotion', {
             token: this.$session.get('token')
           }).then(

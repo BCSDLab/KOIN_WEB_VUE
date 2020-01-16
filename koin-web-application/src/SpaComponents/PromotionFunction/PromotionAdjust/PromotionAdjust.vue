@@ -328,7 +328,7 @@
       }
     },
     created() {
-      if(this.$session.get('userInfo').identity !== 4) {
+      if(this.$session.get('userInfo').identity !== 5) {
         alert('점주가 아니면 게시물을 쓸 수 없습니다.');
         this.$router.go(-1)
       }
