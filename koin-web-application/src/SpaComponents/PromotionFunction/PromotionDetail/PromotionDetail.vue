@@ -344,7 +344,7 @@
             this.$router.push('/login');
           }
         } else {
-          if (this.$session.get('userInfo').nickname === undefined || this.$session.get('userInfo'.nickname === '' || this.$session.get("userInfo").nickname === null)) {
+          if (this.$session.get('userInfo').nickname === undefined || this.$session.get('userInfo').nickname === '' || this.$session.get("userInfo").nickname === null) {
             alert('닉네임이 필요합니다.');
             this.$store.dispatch('nicknameFlagCheck', {
               nickname: this.$session.get('userInfo').nickname
