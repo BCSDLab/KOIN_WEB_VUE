@@ -54,8 +54,6 @@ const actions = {
             }).catch(err => {
                 reject(err);
             })
-            
-            
         })
     },
 
@@ -92,9 +90,8 @@ const mutations = {
     },
     removeSearchWord: (state, data) => {
         const idx = state.recentSearchWords.indexOf(data);
-        state.recentSearchWords.splice(idx, 1);        
+        state.recentSearchWords.splice(idx, 1);
     }
-    
 }
 
 const getters = {

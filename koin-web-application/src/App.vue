@@ -17,7 +17,6 @@
         class="dark-bg2">
       </div>
       <div class="main">
-        
         <router-view/>
         <vue-progress-bar></vue-progress-bar>
       </div>
@@ -37,10 +36,13 @@
   import FooterMenu from './SharedComponents/FooterMenu/FooterMenu'
   import Copyright from './SharedComponents/CopyRight/CopyRight'
   import { mapGetters } from 'vuex'
+  import { closeSearchBarAction } from './mixins/index'
   import * as LoginCheck from './stores/loginCheck'
 
   export default {
     name: 'App',
+    mixins:[closeSearchBarAction],
+
     data() {
       return {
         navFlag: false,

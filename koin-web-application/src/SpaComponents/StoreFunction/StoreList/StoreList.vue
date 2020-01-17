@@ -9,6 +9,17 @@
       <div class="category">
         <v-store-category></v-store-category>
       </div>
+      <store-banner
+        class="list-banner"
+        :start-date="specificPromotion.start_date"
+        :end-date="specificPromotion.end_date"
+        :second-color="isSecondColor"
+        @click="$router.push(`/store/${ specificPromotion.shop_id }`)">
+        <template #title>
+          {{ specificPromotion.title }}
+        </template>
+        {{ specificPromotion.event_title }}
+      </store-banner>
       <div class="category-sub">
         <span class="counter">
           총 <span class="bold">{{ storeDisplayList.length }}개의 업체</span>가 있습니다.
@@ -46,18 +57,25 @@
       </div>
       <div class="list">
         <div
-          v-for="(store, index) of storeDisplayList"
+          v-for="store of storeDisplayList"
           @click="clickStore(store.permalink, store.id)"
           :key="store.id"
-          :class="{'second-card': index%3===1}"
           class="card">
           <div class="title">
             {{ store.name }}
-            <img
-              class="event-flag"
-              v-if="store.is_event"
-              src="https://stage-static.koreatech.in/upload/8c621c1a7b4e016debf3a1164b51d96b.png">
           </div>
+          <template v-if="store.event_articles.length">
+            <div
+              class="date"
+              v-if="!mobileFlag">
+              {{ convertDday(store.event_articles[0].end_date) | formatDateString }}
+            </div>
+            <img
+              v-else
+              class="date-img"
+              src="https://stage-static.koreatech.in/upload/8c621c1a7b4e016debf3a1164b51d96b.png"
+              alt="event">
+          </template>
           <div class="phone">
             <div class="desc">전화번호</div>
             <div class="desc2">{{ store.phone }}</div>
@@ -73,10 +91,31 @@
               class="desc2"> -
             </div>
           </div>
-          <div class="options">
-            <span v-if="store.delivery">#배달가능</span>
-            <span v-if="store.pay_card">#카드가능</span>
-            <span v-if="store.pay_bank">#계좌이체가능</span>
+          <div
+            v-if="!mobileFlag"
+            class="options">
+            <span
+              class="option-delivery"
+              v-if="store.delivery"/>
+            <span
+              class="option-card"
+              v-if="store.pay_card"/>
+            <span
+              class="option-bank"
+              v-if="store.pay_bank"/>
+          </div>
+          <div
+            v-else
+            class="options--mobile">
+            <span :class="{'option-delivery':true, 'option--disabled': !store.delivery}"/>
+            <span :class="{'option-card':true, 'option--disabled': !store.pay_card}"/>
+            <span :class="{'option-bank':true, 'option--disabled': !store.pay_bank}"/>
+          </div>
+          <div
+            class="event-link"
+            v-if="store.event_articles.length && !mobileFlag"
+            @click="clickPromotion($event, store.event_articles[0].id)">
+            이벤트 확인하러 가기 >
           </div>
         </div>
       </div>
@@ -87,6 +126,7 @@
 <script>
   import * as FILTERTABLE from '../../../static/storeFilterTag';
   import {mapGetters} from 'vuex';
+  import StoreBanner from "../Components/StoreBanner";
 
   export default {
     name: 'StoreList',
@@ -98,14 +138,21 @@
         delivery: false,
         tag: "",
         flag: true,
-        loadingFlag: false
+        loadingFlag: false,
+        isSecondColor: false,
+        mobileFlag: false,
+        changeColorInterval: null
       }
     },
     computed: {
       ...mapGetters({
         storeList: 'storeList',
-        storeDisplayList: 'storeCategoryList'
+        storeDisplayList: 'storeCategoryList',
+        specificPromotion: 'storePromotion'
       })
+    },
+    components: {
+      'store-banner': StoreBanner
     },
     created() {
       // store-detail로 바로 접근해서 store-list로 넘어온 경우
@@ -121,11 +168,36 @@
           bank: this.bank,
           card: this.card,
           delivery: this.delivery
-        }).then((data) => {
+        }).then(async () => {
+          this.mobileFlag = window.innerWidth < 576;
+          await this.$store.dispatch("setStorePromotion")
+          this.changeColorInterval = setInterval(
+            () => {
+              this.$store.dispatch("setStorePromotion").then(
+                () => {
+                  this.isSecondColor = !this.isSecondColor;
+                }
+              )
+            },
+            5000
+          )
+
           this.loadingFlag = true;
-        });
+          });
+
+        this.$nextTick(() => {
+          window.addEventListener('resize', () => {
+            this.mobileFlag = window.innerWidth < 576;
+          })
+        })
         this.$session.set("storeNewFlag", true);
       });
+    },
+    destroyed() {
+      clearInterval(this.changeColorInterval)
+      window.removeEventListener('resize', () => {
+        this.mobileFlag = window.innerWidth < 576;
+      })
     },
     methods: {
       clickStore: function (link, id) {
@@ -161,6 +233,25 @@
           card: this.card,
           delivery: this.delivery
         })
+      },
+      convertDday (endDate) {
+        let nowTime = Date.now();
+        let endTime = new Date(endDate).getTime();
+
+        return Math.ceil((endTime - nowTime) / (1000 * 3600 * 24))
+      },
+      clickPromotion (event, promotion) {
+        event.stopPropagation();
+        this.$router.push(`/board/promotion/${promotion}`)
+      }
+    },
+    filters: {
+      formatDateString(date) {
+        if(date > 7) {
+          return '진행중'
+        } else {
+          return `마감 D-${date}`
+        }
       }
     },
     beforeRouteUpdate(to, from, next) {
@@ -188,6 +279,10 @@
     height: 202px
   }
 
+  .list-banner {
+    margin: 18px 0 3px;
+    cursor: pointer;
+  }
   .category-sub {
     margin-top: 20px;
     height: 25px;
@@ -248,22 +343,25 @@
     width: 1131px;
     min-height: 58vh;
     margin-top: 15px;
-    height: 100%;
-  }
-
-  .card {
-    float: left;
-    width: 302px;
-    border: 1px #175c8e solid;
     margin-bottom: 30px;
-    height: 130px;
-    padding: 22px 27px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 358px);
+    grid-column-gap: 29px;
+    grid-row-gap: 30px;
+    grid-auto-rows: 176px;
+  }
+  .stores .list-banner {
+    margin: 18px 0 3px;
     cursor: pointer;
   }
 
-  .second-card {
-    margin-left: 28px;
-    margin-right: 29px;
+  .card {
+    border: 1px #175c8e solid;
+    padding: 22px 27px;
+    cursor: pointer;
+    position: relative;
+
   }
 
   .card:hover {
@@ -284,6 +382,25 @@
     white-space: nowrap;
     word-wrap: normal;
     overflow: hidden;
+  }
+  .card .date {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 11px;
+    font-family: NanumBarunGothic;
+    font-size: 11px;
+    line-height: 1.09;
+    letter-spacing: normal;
+    color: #ffffff;
+    background-color: #175c8e;
+    text-align: center;
+  }
+  .card:hover .date {
+    background-color: #f7941e;
+  }
+  .card .date::before {
+    content: "이벤트"
   }
 
   .card .phone {
@@ -313,8 +430,7 @@
 
   .card .options {
     text-align: left;
-    margin-top: 15px;
-    height: 40px;
+    height: 20px;
   }
 
   .card .options span {
@@ -325,6 +441,28 @@
     background: #f7931e;
     color: white;
   }
+  .card .options .option-delivery::before {
+    content: "#배달가능"
+  }
+  .card .options .option-card::before {
+    content: "#카드가능"
+  }
+  .card .options .option-bank::before {
+    content: "#계좌이체가능"
+  }
+  .card .event-link {
+    position: absolute;
+    bottom: 11px;
+    right: 11px;
+    font-family: NanumBarunGothic;
+    font-size: 11px;
+    color: #175c8e;
+    line-height: 1.36;
+    letter-spacing: normal;
+  }
+  .card:hover .event-link {
+    color: #f7941e;
+  }
 
   .event-flag {
     width: 13px;
@@ -334,12 +472,86 @@
   }
 
   @media (max-width: 576px) {
-    .card:hover {
-      border: 1px #175c8e solid;
+    .list {
+      margin-left: auto;
+      margin-right: auto;
+      width: calc(100% - 32px);
+      grid-template-columns: repeat(1, 1fr);
+      grid-auto-rows: 60px;
+      grid-row-gap: 14px
+    }
+    .stores .list-banner {
+      margin: 24px 16px;
     }
 
+    .card {
+      width: auto;
+      height: auto;
+      padding: 0 16px;
+      box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.1);
+      border: solid 1px #d2dae2;
+      display: flex;
+      align-items: center;
+      flex: none;
+    }
+    .card:hover {
+      border: 1px #f7941e solid;
+    }
+    .card .title {
+      height: auto;
+      width: auto;
+      max-width: 120px;
+      word-break: break-all;
+      text-overflow: unset;
+      overflow: unset;
+      white-space: unset;
+      font-family: NotoSansCJKKR;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.33;
+      letter-spacing: normal;
+      text-align: left;
+      color: #252525;
+    }
     .card:hover .title {
-      color: black;
+      color: #202020;
+    }
+
+    .card .date-img {
+      width: 11px;
+      margin-left: 10px;
+    }
+
+    .card .phone {
+      display: none;
+    }
+    .card .time {
+       display: none;
+     }
+
+    .card .options--mobile {
+      margin-left: auto;
+    }
+    .card .options--mobile span {
+      font-size: 11px;
+      background: transparent;
+      color: #f7931e;
+      margin: 0 3px;
+      padding: 0;
+      border: 0;
+    }
+    .card .options--mobile span.option--disabled {
+      color: #d2dae2;
+    }
+
+    .card .options--mobile .option-delivery::before {
+      content: "배달"
+    }
+    .card .options--mobile .option-card::before {
+      content: "카드결제"
+    }
+    .card .options--mobile .option-bank::before {
+      content: "계좌이체"
     }
     .container {
       border-top: none;
@@ -370,23 +582,6 @@
     .check {
       margin-bottom: 15px;
     }
-
-    .list {
-      margin-left: auto;
-      margin-right: auto;
-      width: calc(100% - 32px);
-    }
-
-    .card {
-      width: calc(100% - 54px);
-      margin-bottom: 14px;
-    }
-
-    .second-card {
-      margin: 0;
-      margin-bottom: 14px;
-    }
-
   }
 </style>
 

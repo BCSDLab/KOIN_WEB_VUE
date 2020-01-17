@@ -36,6 +36,10 @@ import Index2 from '@/SpaComponents/IndexFunction/Index2'
 import PrivacyPolicy from '@/SpaComponents/PrivacyPolicy';
 import NotFound from '@/SpaComponents/404'
 import SearchResult from '@/SpaComponents/SearchFunction/SearchResult'
+import PromotionList from "@/SpaComponents/PromotionFunction/PromotionList/PromotionList";
+import PromotionAdjust from "@/SpaComponents/PromotionFunction/PromotionAdjust/PromotionAdjust";
+import PromotionDetail from "@/SpaComponents/PromotionFunction/PromotionDetail/PromotionDetail";
+
 // TODO: 게시판, 버스, 식단, faq, 상점 컴포넌트화
 
 Vue.use(Router)
@@ -137,6 +141,10 @@ export var router = new Router({
           path: 'question',
           component: BoardList
         },
+        {
+          path: 'promotion',
+          component: PromotionList
+        },
         // 각 게시판 등록
         {
           path: 'notice/register',
@@ -157,6 +165,11 @@ export var router = new Router({
         {
           path: 'question/register',
           component: BoardRegister,
+        },
+        {
+          path: 'promotion/register',
+          component: PromotionAdjust,
+          meta: {authRequired: true}
         },
         // 각 게시판 수정
         {
@@ -179,6 +192,11 @@ export var router = new Router({
           path: 'question/adjust',
           component: BoardAdjust,
         },
+        {
+          path: 'promotion/adjust',
+          component: PromotionAdjust,
+          meta: {authRequired: true}
+        },
         // 각 게시판 상세
         {
           path: 'notice/:id',
@@ -200,6 +218,10 @@ export var router = new Router({
           path: 'question/:id',
           component: BoardDetail,
         },
+        {
+          path: 'promotion/:id',
+          component: PromotionDetail
+        }
       ]
     },
     /*{

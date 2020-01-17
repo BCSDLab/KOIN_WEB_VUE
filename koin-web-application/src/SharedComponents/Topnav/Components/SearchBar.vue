@@ -22,6 +22,7 @@
           placeholder="검색어를 입력하세요."
           type="text"
           @keyup.enter="search"
+          @keyup.esc="closeSearchBar"
           @focus="focusFlag = true"
           ref="searchInput"
         />
@@ -45,7 +46,10 @@
         @click="search"
       />
     </div>
-    <div v-if="focusFlag" class="recent-search-words">
+    <div
+      v-if="focusFlag"
+      class="recent-search-words">
+
       <div class="recent-search-words__head">
         <span>최근 검색</span>
         <span
@@ -79,9 +83,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-
+import { closeSearchBarAction } from "../../../mixins/index";
 export default {
   name: "SearchBar",
+  mixins:[closeSearchBarAction],
+
   data() {
     return {
       page: 1,
@@ -109,9 +115,6 @@ export default {
     },
   },
   methods: {
-    closeSearchBar() {
-      this.$store.dispatch("toggleSearchBarAction", false);
-    },
     search() {
       if (this.searchWord.trim() === "") {
         alert("검색어를 입력해주세요.");
@@ -267,7 +270,7 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-} 
+}
 
 .remove-icon {
   width: 15px;

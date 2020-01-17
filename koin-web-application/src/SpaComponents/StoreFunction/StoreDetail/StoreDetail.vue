@@ -17,10 +17,12 @@
             <div class="store-info">
               <div class="store-name">
                 {{ specificStore.name }}
-                <img
-                  class="event-flag"
-                  v-if="specificStore.is_event"
-                  src="https://stage-static.koreatech.in/upload/8c621c1a7b4e016debf3a1164b51d96b.png">
+                <template v-if="specificStore.event_articles.length">
+                  <div
+                    class="event">
+                    {{ convertDday(specificStore.event_articles[0].end_date) | formatDateString }}
+                  </div>
+                </template>
               </div>
               <div class="store-phone-number info">
                 <span class="title">전화번호</span>
@@ -92,13 +94,12 @@
                   @click="goList"
                   class="go-back">
                   상점목록
-                </button> 
+                </button>
               </div>
             </div>
           </div>
           <div
             v-if="specificStore.image_urls !== null"
-            
             class="info-image">
             <!-- pc web -->
             <img
@@ -116,12 +117,12 @@
               v-else
               :key="index"
               @click="$store.commit('darkenBackGround', true), posterActive = true, imageIndex = index"
-              :src="specificStore.image_urls[index]">    
+              :src="specificStore.image_urls[index]">
             <img
               class="more"
               v-if="specificStore.image_urls !== null && specificStore.image_urls.length >= 2"
               src="http://static.koreatech.in/assets/img/1.png" alt="">
-          </div>     
+          </div>
         </div>
         <div
           v-if="specificStore.is_event"
@@ -134,6 +135,18 @@
             v-html="addBr(specificStore.remarks)">
           </p>
         </div>
+
+        <store-banner
+          v-if="specificStore.event_articles.length"
+          :start-date="specificStore.event_articles[0].start_date"
+          :end-date="specificStore.event_articles[0].end_date"
+          :second-color="Math.random() >= 0.5"
+          @click="$router.push('/board/promotion/' + specificStore.event_articles[0].id)">
+          <template #title>
+            {{ specificStore.event_articles[0].title }}
+          </template>
+          {{ specificStore.event_articles[0].event_title }}
+        </store-banner>
         <div
           v-if="this.menus.length !== 0"
           class="menu">
@@ -159,23 +172,24 @@
         </div>
       </div>
     </div>
-    
     <store-poster
       v-if="posterActive"
       :posterImages="specificStore.image_urls"
       :imageIndex="imageIndex"
       @close="close"
     />
-    
   </div>
 </template>
 <script>
 import StorePoster from '../Components/StorePoster';
 import { mapGetters } from 'vuex';
+import StoreBanner from "../Components/StoreBanner";
   export default {
     name: 'StoreDetail',
     components: {
-      'store-poster': StorePoster
+      'store-poster': StorePoster,
+      'store-banner': StoreBanner
+
     },
     computed: {
       ...mapGetters({
@@ -208,6 +222,21 @@ import { mapGetters } from 'vuex';
       close() {
         this.posterActive = false;
         this.$store.commit("darkenBackGround", false);
+      },
+      convertDday (endDate) {
+        let nowTime = Date.now();
+        let endTime = new Date(endDate).getTime();
+
+        return Math.floor((endTime - nowTime) / (1000 * 3600 * 24))
+      }
+    },
+    filters: {
+      formatDateString(date) {
+        if(date > 7) {
+          return '진행중'
+        } else {
+          return `마감 D-${date}`
+        }
       }
     },
     created: function () {
@@ -334,7 +363,7 @@ import { mapGetters } from 'vuex';
   }
 
   .store-name {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
@@ -342,6 +371,22 @@ import { mapGetters } from 'vuex';
     letter-spacing: -1.5px;
     color: #252525;
     margin-bottom: 18px;
+  }
+  .event {
+    display: inline-block;
+    font-family: NanumBarunGothic;
+    font-size: 10px;
+    margin-left: 14px;
+    border: solid 1px #f7941e;
+    padding: 0 10px;
+    height: 14px;
+    border-radius: 7px;
+    line-height: 1.6;
+    letter-spacing: normal;
+    color: #f7941e;
+  }
+  .event::before {
+    content: "이벤트"
   }
   .info {
     display: flex;
@@ -433,6 +478,9 @@ import { mapGetters } from 'vuex';
     font-size: 13px;
   }
 
+  .store-banner {
+    margin: 24px 0 64px;
+  }
   .menu {
     margin: 24px 0;
     text-align: left;
@@ -495,13 +543,6 @@ import { mapGetters } from 'vuex';
     margin-right: 14px;
   }
 
-  .event-flag {
-    width: 17px;
-    margin-left: 12px;
-    position: relative;
-    top: 4px;
-  }
-
   .two-line {
     line-height: 1.5;
     text-align: left;
@@ -541,6 +582,21 @@ import { mapGetters } from 'vuex';
       display: block;
     }
 
+    .store-name {
+      font-weight: bold;
+      letter-spacing: normal;
+    }
+    .event {
+      margin-left: 12px;
+      padding: 0 5px;
+    }
+    .event-flag {
+      display: inline-block;
+      width: 11px;
+      margin-left: 6px;
+      position: relative;
+      top: 2px;
+    }
     .info-text {
       height: auto;
     }

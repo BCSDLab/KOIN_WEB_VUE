@@ -202,8 +202,9 @@
           { path: 'board/anonymous', title: '익명게시판' },
           { path: 'board/question',  title: '질문게시판' },
           { path: 'board/notice', title: '공지사항' },
+          { path: 'board/promotion', title: '홍보게시판' },
           { path: 'timetable', title: '시간표' },
-          { path: 'search', title: '검색결과' }
+          { path: 'search', title: '검색결과' },
         ],
         selectedCategory: '',
         authBoxFlag: false,
@@ -387,6 +388,9 @@
               break;
             case 5:
               this.$router.push('/lost');
+              break;
+            case 6:
+              this.$router.push('/board/promotion');
               break;
             case 10:
               this.$router.push('/board/question');

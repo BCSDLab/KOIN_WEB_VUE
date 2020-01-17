@@ -14,6 +14,7 @@ import Circle from './modules/circle';
 import Lost from './modules/lost';
 import TimeTable from './modules/timeTable';
 import Search from './modules/search';
+import Promotion from './modules/promotion'
 Vue.use(Vuex);
 
 //카테고리용 모듈
@@ -79,6 +80,8 @@ export const store = new Vuex.Store({
     Circle: Circle,
     Lost: Lost,
     TimeTable: TimeTable,
+    Search: Search,
+    Promotion: Promotion
     Search: Search
   }
 });

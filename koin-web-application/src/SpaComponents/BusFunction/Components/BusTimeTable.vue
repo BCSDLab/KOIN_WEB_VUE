@@ -23,7 +23,7 @@
           <button
             :class="{'shuttle': shuttleChecked, 'no-shuttle': !shuttleChecked }"
             class="select-button">
-            {{ shuttleTimeTableTitle }}
+            {{ shuttleTimeTableTitle }} 
             <img
               class="under-arrow"
               src="https://static.koreatech.in/assets/img/bus_dropdown.png">

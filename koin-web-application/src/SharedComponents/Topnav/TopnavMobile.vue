@@ -111,6 +111,9 @@
             case 5:
               this.$router.push('/lost');
               break;
+            case 6:
+              this.$router.push('/board/promotion');
+              break;
           }
         }
         else {

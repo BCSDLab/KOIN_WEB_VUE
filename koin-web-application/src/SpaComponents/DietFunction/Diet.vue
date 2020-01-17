@@ -100,8 +100,7 @@
                   :key="diet.id">
                   <div
                     class="carte"
-                    v-if="dietName===diet.place"
-                    >
+                    v-if="dietName===diet.place">
                     <div
                       class="menu"
                       v-for="menu in diet.menu"

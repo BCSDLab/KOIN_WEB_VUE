@@ -50,6 +50,13 @@ export function userWithdrawal(token) {
     }
   });
 }
+export function adjustOwnerInfo(token, body) {
+  return axios.put(API_PATH + 'user/owner/me', body, {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  });
+}
 
 // #board part
 export function setHotBoardList() {
@@ -488,4 +495,98 @@ export function searchStore (page, searchType, query) {
 
 export function getCardNews () {
   return axios.get(`${API_PATH}cardNews`);
+}
+
+// #promotion part
+export function setPromotionList(nowPageNum, limit) {
+  return axios.get(API_PATH + 'events/?page=' + nowPageNum + '&limit=' + limit)
+}
+export function setPendingPromotionList(nowPageNum,limit) {
+  return axios.get(API_PATH + 'events/pending/?page=' + nowPageNum + '&limit=' + limit)
+}
+export function setClosedPromotionList(nowPageNum, limit) {
+  return axios.get(API_PATH + 'events/closed/?page=' + nowPageNum + '&limit=' + limit)
+}
+export function checkMyPromotion(token) {
+  return axios.get(API_PATH + 'events/pending/my?page=1&limit=12', {
+    headers: {
+      "Authorization": "Bearer "+  token
+    }
+  });
+}
+
+export function setMyStore(token) {
+  return axios.get(API_PATH + 'events/my/shops', {
+    headers: {
+      "Authorization": "Bearer "+  token
+    }
+  });
+}
+
+export function setSpecificPromotion(articleId, token) {
+  return axios.get(API_PATH + 'events/' + articleId, {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+}
+
+export function registerPromotion(token, body){
+  return axios.post(API_PATH + 'events', body , {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  })
+}
+
+export function removePromotion(articleId, token){
+  return axios.delete(API_PATH + 'events/' + articleId, {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  })
+}
+
+export function adjustPromotion(articleId, token, body){
+  return axios.put(API_PATH + 'events/' + articleId, body, {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  })
+}
+
+export function grantCheckPromotion (token, body){
+  return axios.post(API_PATH + 'events/grant/check', body , {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  })
+}
+
+export function adjustPromotionComment (articleId, id, token, body){
+  return axios.put(API_PATH + 'events/' + articleId + '/comments/' + id, body , {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  })
+}
+
+export function removePromotionComment(articleId, id, token){
+  return axios.delete(API_PATH + 'events/' + articleId + '/comments/' + id, {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  })
+}
+
+export function registerPromotionComment(articleId, token, body){
+  return axios.post(API_PATH + 'events/' + articleId + '/comments', body, {
+    headers: {
+      "Authorization": "Bearer "+token
+    }
+  })
+}
+
+export function setRandomPendingPromotion(){
+  return axios.get(API_PATH + 'events/pending/random')
 }

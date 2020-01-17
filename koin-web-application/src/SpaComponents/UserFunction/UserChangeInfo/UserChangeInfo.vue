@@ -43,12 +43,23 @@
           중복확인
         </button>
       </div>
-      <div class="student-number">
-        <input
-          type="text"
-          v-model="studentNumber"
-          placeholder="학번 (선택)"
-          :disabled="this.$session.get('userInfo').student_number !== null">
+      <div v-if="signUpIdentity !== 5">
+        <div class="student-number">
+          <input
+            type="text"
+            v-model="studentNumber"
+            placeholder="학번 (선택)"
+            :disabled="this.$session.get('userInfo').student_number !== null">
+        </div>
+      </div>
+      <div v-else-if="signUpIdentity === 5">
+        <div class="email">
+          <input
+            type="email"
+            v-model="email"
+            placeholder="이메일 등록">
+          <div class="help-desc">이메일은 비밃번호를 찾을 시에 필요하니 등록하시길 바랍니다.</div>
+        </div>
       </div>
       <div class="phone-number">
         <input
@@ -56,40 +67,41 @@
           v-model="phoneNumber"
           placeholder="전화번호 (Ex: 010-0000-0000) (선택)">
       </div>
-      <div class="select-list">
-        <div class="select-major">
-          <div class="dropdown">
-            <button
-              class="drop-btn"
-              type="button"
-              value="signUpMajor"
-              :style="{ backgroundColor: signUpMajor===undefined ? '#ffffff' : '#175c8e', color: signUpMajor===undefined ? '#bec9d5' : '#b5c1cd' }"
-              :disabled="this.$session.get('userInfo').major !== null">
-              {{ signUpMajor === undefined ? selectMajorValue : signUpMajor }}
-            </button>
+      <div v-if="signUpIdentity !== 5">
+        <div class="select-list">
+          <div class="select-major">
+            <div class="dropdown">
+              <button
+                class="drop-btn"
+                type="button"
+                value="signUpMajor"
+                :style="{ backgroundColor: signUpMajor===undefined ? '#ffffff' : '#175c8e', color: signUpMajor===undefined ? '#bec9d5' : '#b5c1cd' }"
+                :disabled="this.$session.get('userInfo').major !== null">
+                {{ signUpMajor === undefined ? selectMajorValue : signUpMajor }}
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="select-gender">
-          <div class="dropdown">
-            <button
-              class="drop-btn gender-drop-btn"
-              type="button"
-              @click="clickSelectGenderBtn"
-              :class="{ 'drop-btn__disabled' : !(gender===undefined)}"
-              :style="{ backgroundColor: gender===undefined ? '#ffffff' : '#175c8e', color: gender===undefined ? '#252525' : '#b5c1cd' }"
-              :disabled="this.$session.get('userInfo').gender!==null">
-              {{ gender === undefined ? selectGenderValue : gender }}
-              <img src="https://static.koreatech.in/assets/img/bus_dropdown.png">
-            </button>
-            <div
-              id="select-gender-dropdown"
-              class="dropdown-list gender-list">
-              <a
-                v-for="gender in genderList"
-                :key="gender.id"
-                @click="clickGender(gender)">
-                {{ gender }}
-              </a>
+          <div class="select-gender">
+            <div class="dropdown">
+              <button
+                class="drop-btn gender-drop-btn"
+                type="button"
+                @click="clickSelectGenderBtn"
+                :style="{ backgroundColor: gender===undefined ? '#ffffff' : '#175c8e', color: gender===undefined ? '#252525' : '#b5c1cd' }"
+                :disabled="this.$session.get('userInfo').gender!==null">
+                {{ gender === undefined ? selectGenderValue : gender }}
+                <img src="https://static.koreatech.in/assets/img/bus_dropdown.png">
+              </button>
+              <div
+                id="select-gender-dropdown"
+                class="dropdown-list gender-list">
+                <a
+                  v-for="gender in genderList"
+                  :key="gender.id"
+                  @click="clickGender(gender)">
+                  {{ gender }}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -167,6 +179,9 @@
         genderList: ["남", "여"],
         selectGenderValue: "성별",
         phoneNumberChecker: /^\d{3}-\d{3,4}-\d{4}$/,
+        //점주 계정
+        emailChecker: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+        email: '',
       }
     },
     methods: {
@@ -220,6 +235,10 @@
           alert("전화번호 양식을 지켜주세요. (Ex: 010-1234-5678)");
           return;
         }
+        if(this.identity === 4 && (this.email === ' ' || this.emailChecker.test(this.email))) {
+          alert("이메일 양식을 지켜주세요.")
+          return;
+        }
         if((this.nickname === undefined || this.nickname == this.$session.get("userInfo").nickname) || this.nicknameCheckFlag) {
           this.changeInfoFlag = true;
           this.$store.dispatch('adjustUserInfo', {
@@ -234,7 +253,8 @@
             is_graduated: this.signUpIdentity == 4 ? true : false,
             major: this.signUpMajor,
             student_number: this.studentNumber,
-            phone_number: this.phoneNumber
+            phone_number: this.phoneNumber,
+            email: this.email
           }).then((data) => {
               this.changeInfoFlag = false;
               this.$session.set("userInfo", data);
@@ -358,6 +378,8 @@
             this.signUpMajor = this.userInfo.major === null ? undefined : this.userInfo.major;
             this.studentNumber = this.userInfo.student_number === null ? undefined : this.userInfo.student_number;
             this.phoneNumber = this.userInfo.phone_number === null ? undefined : this.userInfo.phone_number;
+            this.email = this.userInfo.email === null ? '': this.userInfo.email;
+            console.log(this.userInfo)
           }
         }
       )
@@ -396,7 +418,6 @@
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
-    line-height: normal;
     letter-spacing: -0.8px;
     text-align: left;
     color: #bec9d5;
@@ -417,7 +438,7 @@
     color: #b5c1cd;
   }
 
-  .change-info .pw-check input, .change-info .name input, .change-info .student-number input, .change-info .phone-number input {
+  .change-info .pw-check input, .change-info .name input, .change-info .student-number input, .change-info .phone-number input, .change-info .email input {
     border:#d2dae2 1px solid;
     width: 366px;
     height: 41px;
@@ -542,9 +563,6 @@
     border-bottom: none;
   }
 
-  .drop-btn__disabled{
-    cursor: default;
-  }
 
   .change-info-button {
     width: 390px;

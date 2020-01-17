@@ -442,7 +442,6 @@ export default {
         minute: 25,
         day: [0,1,2,3,4]
       }
-
     ],
     "daesung":"none"
   },
