@@ -244,9 +244,6 @@
       clickPromotion (event, promotion) {
         event.stopPropagation();
         this.$router.push(`/board/promotion/${promotion}`)
-      },
-      test() {
-        console.log(this.specificPromotion)
       }
     },
     filters: {
