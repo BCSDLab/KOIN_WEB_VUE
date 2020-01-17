@@ -82,5 +82,6 @@ export const store = new Vuex.Store({
     TimeTable: TimeTable,
     Search: Search,
     Promotion: Promotion
+    Search: Search
   }
 });

@@ -9,7 +9,6 @@
       <div class="category">
         <v-store-category></v-store-category>
       </div>
-
       <store-banner
         class="list-banner"
         :start-date="specificPromotion.start_date"
@@ -21,7 +20,6 @@
         </template>
         {{ specificPromotion.event_title }}
       </store-banner>
-
       <div class="category-sub">
         <span class="counter">
           총 <span class="bold">{{ storeDisplayList.length }}개의 업체</span>가 있습니다.
@@ -285,7 +283,6 @@
     margin: 18px 0 3px;
     cursor: pointer;
   }
-
   .category-sub {
     margin-top: 20px;
     height: 25px;
@@ -364,6 +361,7 @@
     padding: 22px 27px;
     cursor: pointer;
     position: relative;
+
   }
 
   .card:hover {
@@ -555,7 +553,6 @@
     .card .options--mobile .option-bank::before {
       content: "계좌이체"
     }
-
     .container {
       border-top: none;
     }
@@ -585,7 +582,6 @@
     .check {
       margin-bottom: 15px;
     }
-
   }
 </style>
 

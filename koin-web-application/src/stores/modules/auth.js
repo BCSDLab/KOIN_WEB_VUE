@@ -33,6 +33,7 @@ const actions = {
               context.commit("tokenUpdate", res.data.token);
               context.commit("userInfoUpdate", res.data.user);
               console.log(res.data.user)
+
               resolve([res.data.user, res.data.token])
             },
             (err) => {

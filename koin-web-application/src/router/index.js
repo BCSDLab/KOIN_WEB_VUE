@@ -39,6 +39,7 @@ import SearchResult from '@/SpaComponents/SearchFunction/SearchResult'
 import PromotionList from "@/SpaComponents/PromotionFunction/PromotionList/PromotionList";
 import PromotionAdjust from "@/SpaComponents/PromotionFunction/PromotionAdjust/PromotionAdjust";
 import PromotionDetail from "@/SpaComponents/PromotionFunction/PromotionDetail/PromotionDetail";
+
 // TODO: 게시판, 버스, 식단, faq, 상점 컴포넌트화
 
 Vue.use(Router)
@@ -362,7 +363,7 @@ export var router = new Router({
       path: '/search', component: SearchResult,
       props: (route) => ({ query: route.query.q }),
       name: 'SearchResults'
-    },
+    }
   ]
 });
 import * as LoginCheck from '../stores/loginCheck'

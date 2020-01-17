@@ -106,7 +106,7 @@ export default [
         'link': '/board/promotion',
         'newFlag': true,
         'planFlag': false
-      },
+      }
     ]
   },
   /*

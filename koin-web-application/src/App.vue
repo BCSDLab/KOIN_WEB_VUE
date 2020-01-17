@@ -1,7 +1,7 @@
 <template>
   <div
     id="app"
-    :style="{
+    :style="{ 
       overflow: nowFooterCategory === 1 ? 'hidden' : 'initial',
       maxHeight: nowFooterCategory === 1 ? '600px' : '100%',
       position: darkBackGround ? 'relative' : 'static'}">
@@ -14,11 +14,9 @@
       :style="{ position: searchBarFlag ? 'relative' : 'static' }">
       <div
         v-if="searchBarFlag"
-        @click="closeSearchBar"
         class="dark-bg2">
       </div>
       <div class="main">
-
         <router-view/>
         <vue-progress-bar></vue-progress-bar>
       </div>
@@ -44,6 +42,7 @@
   export default {
     name: 'App',
     mixins:[closeSearchBarAction],
+
     data() {
       return {
         navFlag: false,
@@ -73,7 +72,16 @@
       this.$store.commit('userInfoUpdate', this.$session.get("userInfo"));
       this.$store.commit('tokenUpdate', this.$session.get("token"));
     },
-
+    mounted() {
+      this.$nextTick(() => {
+      window.addEventListener("resize", () => {
+        if (window.innerWidth <= 576) {
+          if (this.searchBarFlag)
+            this.$store.dispatch("toggleSearchBarAction", false);
+        }
+      });
+    });
+    }
   }
 </script>
 

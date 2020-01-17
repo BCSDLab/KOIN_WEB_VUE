@@ -61,7 +61,6 @@
           <div class="help-desc">이메일은 비밃번호를 찾을 시에 필요하니 등록하시길 바랍니다.</div>
         </div>
       </div>
-
       <div class="phone-number">
         <input
           type="text"
