@@ -10,6 +10,7 @@
         <v-store-category></v-store-category>
       </div>
       <store-banner
+        v-if="specificPromotion !== undefined && specificPromotion !== null && specificPromotion !== ''"
         class="list-banner"
         :start-date="specificPromotion.start_date"
         :end-date="specificPromotion.end_date"
