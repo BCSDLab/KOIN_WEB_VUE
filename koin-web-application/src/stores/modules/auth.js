@@ -162,11 +162,11 @@ const actions = {
             student_number: payload.student_number,
             phone_number: payload.phone_number
           }
-          let userType = payload.identity !== 4 ? 'User' : 'Owner'
+          let userType = payload.identity !== 5 ? 'User' : 'Owner'
           if (payload.password != null && payload.password !== "") {
             body["password"] = sha256(payload.password)
           }
-          if(payload.identity === 4 && payload.email !== '') {
+          if(payload.identity === 5 && payload.email !== '') {
             body.email = payload.email
             delete body.student_number
           }
