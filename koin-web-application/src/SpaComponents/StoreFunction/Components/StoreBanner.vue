@@ -1,7 +1,7 @@
 <template>
   <div
     :class="{'banner': true, 'banner--secondary': secondColor}"
-    @click="$emit('click')">
+    @click="$router.push(to)">
     <div class="banner__title">
       <slot name="title"/>
     </div>
@@ -28,6 +28,10 @@
       },
       secondColor: {
         type: Boolean,
+        required: true
+      },
+      to: {
+        type: String,
         required: true
       }
     },

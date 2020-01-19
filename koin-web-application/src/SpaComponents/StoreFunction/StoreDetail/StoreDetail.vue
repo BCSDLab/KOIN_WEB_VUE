@@ -141,7 +141,7 @@
           :start-date="specificStore.event_articles[0].start_date"
           :end-date="specificStore.event_articles[0].end_date"
           :second-color="Math.random() >= 0.5"
-          @click="$router.push('/board/promotion/' + specificStore.event_articles[0].id)">
+          :to="'/board/promotion/' + specificStore.event_articles[0].id">
           <template #title>
             {{ specificStore.event_articles[0].title }}
           </template>
