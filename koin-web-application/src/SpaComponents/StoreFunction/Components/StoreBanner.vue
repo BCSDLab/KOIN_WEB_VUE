@@ -9,7 +9,7 @@
       <slot/>
     </div>
     <div class="banner__date">
-      기간 : {{ displayPeriod }}
+      <span class="banner__date-desc">기간 :</span> {{ displayPeriod }}
     </div>
   </div>
 </template>
@@ -62,6 +62,7 @@
   .banner__title {
     padding-top: 22px;
     font-size: 20px;
+    font-weight: bold;
     line-height: 1.15;
     display: flex;
     justify-content: center;
@@ -80,6 +81,9 @@
     line-height: 1.09;
     bottom: 11px;
     right: 15px;
+  }
+  .banner__date-desc {
+    color: #fbff9f
   }
 
   @media (max-width: 576px) {
