@@ -49,6 +49,7 @@
     <div
       v-if="focusFlag"
       class="recent-search-words">
+
       <div class="recent-search-words__head">
         <span>최근 검색</span>
         <span
@@ -86,6 +87,7 @@ import { closeSearchBarAction } from "../../../mixins/index";
 export default {
   name: "SearchBar",
   mixins:[closeSearchBarAction],
+
   data() {
     return {
       page: 1,

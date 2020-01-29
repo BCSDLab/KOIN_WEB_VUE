@@ -177,7 +177,7 @@
       },
       // 등록하기 누르기
       registerPromotion() {
-        if(this.$session.get('userInfo') !== undefined && this.$session.get('userInfo').identity === 4) {
+        if(this.$session.get('userInfo') !== undefined && this.$session.get('userInfo').identity === 5) {
           this.$store.dispatch('checkMyPromotion', {
             token: this.$session.get('token')
           }).then(
@@ -188,6 +188,14 @@
                   this.$router.push('/board/promotion/adjust');
                 }
               } else {
+                if (this.$session.get('userInfo').nickname === undefined || this.$session.get('userInfo').nickname === '' || this.$session.get("userInfo").nickname === null) {
+                  alert('닉네임이 필요합니다.');
+                  await this.$store.dispatch('nicknameFlagCheck', {
+                    nickname: this.$session.get('userInfo').nickname
+                  });
+                  this.$router.push('/changeInfo');
+                  return;
+                }
                 this.$session.remove('specificPromotionId');
                 this.$router.push('/board/promotion/register');
               }

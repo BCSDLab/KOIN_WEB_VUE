@@ -296,7 +296,7 @@
     name: 'BusTimeTable',
     data: function () {
       return {
-        vacationFlag: false,
+        vacationFlag: true,
         totalTimeTable: undefined,
         shuttleChecked: true,
         daesungChecked: false,

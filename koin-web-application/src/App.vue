@@ -1,7 +1,7 @@
 <template>
   <div
     id="app"
-    :style="{
+    :style="{ 
       overflow: nowFooterCategory === 1 ? 'hidden' : 'initial',
       maxHeight: nowFooterCategory === 1 ? '600px' : '100%',
       position: darkBackGround ? 'relative' : 'static'}">
@@ -18,7 +18,6 @@
         class="dark-bg2">
       </div>
       <div class="main">
-
         <router-view/>
         <vue-progress-bar></vue-progress-bar>
       </div>
@@ -44,6 +43,7 @@
   export default {
     name: 'App',
     mixins:[closeSearchBarAction],
+
     data() {
       return {
         navFlag: false,
@@ -72,8 +72,7 @@
       this.$session.set("storeNewFlag",true)
       this.$store.commit('userInfoUpdate', this.$session.get("userInfo"));
       this.$store.commit('tokenUpdate', this.$session.get("token"));
-    },
-
+    }
   }
 </script>
 

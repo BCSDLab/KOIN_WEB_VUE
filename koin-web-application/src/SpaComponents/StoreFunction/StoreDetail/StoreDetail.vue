@@ -100,7 +100,6 @@
           </div>
           <div
             v-if="specificStore.image_urls !== null"
-
             class="info-image">
             <!-- pc web -->
             <img
@@ -142,13 +141,12 @@
           :start-date="specificStore.event_articles[0].start_date"
           :end-date="specificStore.event_articles[0].end_date"
           :second-color="Math.random() >= 0.5"
-          @click="$router.push('/board/promotion/' + specificStore.event_articles[0].id)">
+          :to="'/board/promotion/' + specificStore.event_articles[0].id">
           <template #title>
             {{ specificStore.event_articles[0].title }}
           </template>
           {{ specificStore.event_articles[0].event_title }}
         </store-banner>
-
         <div
           v-if="this.menus.length !== 0"
           class="menu">
@@ -174,14 +172,12 @@
         </div>
       </div>
     </div>
-
     <store-poster
       v-if="posterActive"
       :posterImages="specificStore.image_urls"
       :imageIndex="imageIndex"
       @close="close"
     />
-
   </div>
 </template>
 <script>
@@ -193,6 +189,7 @@ import StoreBanner from "../Components/StoreBanner";
     components: {
       'store-poster': StorePoster,
       'store-banner': StoreBanner
+
     },
     computed: {
       ...mapGetters({
@@ -391,7 +388,6 @@ import StoreBanner from "../Components/StoreBanner";
   .event::before {
     content: "이벤트"
   }
-
   .info {
     display: flex;
   }
@@ -485,7 +481,6 @@ import StoreBanner from "../Components/StoreBanner";
   .store-banner {
     margin: 24px 0 64px;
   }
-
   .menu {
     margin: 24px 0;
     text-align: left;
@@ -602,7 +597,6 @@ import StoreBanner from "../Components/StoreBanner";
       position: relative;
       top: 2px;
     }
-
     .info-text {
       height: auto;
     }
