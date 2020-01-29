@@ -10,11 +10,12 @@
         <v-store-category></v-store-category>
       </div>
       <store-banner
+        v-if="specificPromotion !== undefined && specificPromotion !== null && specificPromotion !== ''"
         class="list-banner"
         :start-date="specificPromotion.start_date"
         :end-date="specificPromotion.end_date"
         :second-color="isSecondColor"
-        @click="$router.push(`/store/${ specificPromotion.shop_id }`)">
+        :to="'/board/promotion/' + specificPromotion.id">
         <template #title>
           {{ specificPromotion.title }}
         </template>
