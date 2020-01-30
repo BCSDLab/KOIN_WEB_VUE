@@ -38,7 +38,7 @@ export default {
       if (window.localStorage.getItem('timetable_version') != res) {
         alert('수강신청 편람이 업데이트 되었습니다. 유의하시길 바랍니다.');
         window.localStorage.setItem("timetable_version", res);
-      } 
+      }
     });
     this.$store.dispatch("setNowRoutingPath", {
       path: "timetable"
@@ -50,7 +50,7 @@ export default {
       })
     })
   },
-  destoryed () {
+  destroyed () {
     this.$store.dispatch("setNowRoutingPath", {
       path: ""
     });
