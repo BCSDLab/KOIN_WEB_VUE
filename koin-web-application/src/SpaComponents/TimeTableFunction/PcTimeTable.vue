@@ -198,7 +198,7 @@
           console.log(this.myTimeTable);
         })
       },
-      
+
     },
     created() {
       window.onclick = function (event) {
@@ -305,7 +305,6 @@
     font-weight: normal;
     font-style: normal;
     font-stretch: normal;
-    line-height: 1.6;
     letter-spacing: normal;
     text-align: left;
     color: #bec9d5;

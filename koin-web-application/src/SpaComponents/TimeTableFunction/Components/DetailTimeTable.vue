@@ -617,6 +617,7 @@
 	/*스크롤 감추기*/
 	* {
 		-ms-overflow-style: none;
+    scrollbar-width: none;
 	}
 
 	::-webkit-scrollbar {
