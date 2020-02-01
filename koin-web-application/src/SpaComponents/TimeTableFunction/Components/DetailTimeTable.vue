@@ -71,7 +71,7 @@
       id="table-body"
       :class="{'my-table': myTimeTableflag}"
       :style="{width: totalTableWidth+ 'px'}"
-			@scroll="scrollEvent">
+      @scroll="scrollEvent">
       <div
         :key="subject.id"
         class="table-row-body"
