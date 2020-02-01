@@ -50,7 +50,10 @@ export default {
       })
     })
   },
-  destroyed () {
+  beforeDestroy () {
+    window.removeEventListener('resize', () => {
+      this.width = window.innerWidth;
+    })
     this.$store.dispatch("setNowRoutingPath", {
       path: ""
     });

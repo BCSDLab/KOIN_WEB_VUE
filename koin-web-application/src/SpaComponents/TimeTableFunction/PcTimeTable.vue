@@ -173,8 +173,7 @@
         this.changeMajorCount++;
         this.$store.dispatch("selectMajor", {
           'timeTableData': DB.default,
-          "major": major,
-          'semester': this.setSemester()
+          "major": major
         }).then((resolve)=> {
           this.loadingFlag = true;
           this.nowMajor = major;
@@ -185,14 +184,12 @@
         this.nowMajor = "전체";
         this.$store.dispatch("searchTimeTable", {
           'timeTableData': DB.default,
-          'searchName': this.searchName,
-          'semester': this.setSemester()
+          'searchName': this.searchName
         })
       },
       getMyTimetable: function() {
         this.$store.dispatch("getMyTimeTable", {
           token: this.$session.get("token"),
-          semester: this.setSemester(),
           mobile: false,
         }).then(() => {
           console.log(this.myTimeTable);
@@ -201,7 +198,7 @@
 
     },
     created() {
-      window.onclick = function (event) {
+      window.addEventListener('click', function (event) {
         if (!event.target.matches('.dropbtn')) {
           var dropdowns = document.getElementsByClassName("dropdown-content");
           var i;
@@ -212,16 +209,18 @@
             }
           }
         }
-      }
+      })
     },
     mounted() {
       console.log("pc web");
       this.$store.dispatch("initTimeTable");
       this.$store.dispatch("resetLayout");
+      // 학기 받아오기
+      this.$store.dispatch("setTotalSemester");
+      this.$store.dispatch("selectSemester", this.setSemester());
       //전체 테이블 초기화
       this.$store.dispatch("setTotalTimeTable", {
-        timeTableData: DB.default,
-        semester: this.setSemester()
+        timeTableData: DB.default
       }).then((resolve, reject)=> {
         if(resolve) {
           this.loadingFlag=true;

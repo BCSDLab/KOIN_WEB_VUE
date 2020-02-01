@@ -166,6 +166,8 @@
         selectTimeTable: "selectTimeTable",
         selectedLayout: "selectedLayout",
         displayLayout: "displayLayout",
+        semesters: "semesters",
+        selectedSemester: "selectedSemester",
       })
     },
     watch: {
@@ -302,6 +304,16 @@
         }
         return ;
       },
+      async selectSemester (semester) {
+        await this.$store.dispatch('selectSemester', semester)
+        await this.$store.dispatch('setTotalTimeTable')
+        this.$store.dispatch('initTimeTable')
+        await this.$store.dispatch('resetLayout')
+        await this.$store.dispatch("getMyTimeTable", {
+          token: this.$session.get("token"),
+          mobile: false,
+        })
+      }
     },
     filters: {
       displaySemester (semester) {

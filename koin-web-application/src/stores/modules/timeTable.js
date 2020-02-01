@@ -15,6 +15,8 @@ const defaultState = {
   clickedSubject: {},
   sheetFlag: false,
   tdHeight: 0,
+  totalSemester: [],
+  selectedSemester: ''
 };
 
 const actions = {
@@ -45,10 +47,21 @@ const actions = {
       }
     }
   },
+  setTotalSemester: ({commit}) => {
+    return api.getAllSemester().then((res) => {
+      commit("totalSemesterUpdate", res.data)
+    })
+  },
+  selectSemester: (context, payload) => {
+    return new Promise(resolve => {
+      context.commit("selectedSemesterUpdate", payload);
+      resolve()
+    })
+  },
   //total table
   setTotalTimeTable: (context, payload) => {
     return new Promise((resolve, reject)=> {
-      api.getAllLecture(payload.semester).then((res)=> {
+      api.getAllLecture(context.state.selectedSemester).then((res)=> {
         context.commit("totalTimeTableUpdate", res.data);
         resolve(true)
       }, error => {
@@ -66,21 +79,24 @@ const actions = {
       context.state.colorIndex = 0;
     }
     let color;
-    for(let i = 0; i < subject.length; i++) {
-      if(context.state.removedColors.length === 0) {
-        color = context.state.colors[context.state.colorIndex];
-        context.state.colorIndex++;
+    subject.map(
+      value => {
+        if(context.state.removedColors.length === 0) {
+          color = context.state.colors[context.state.colorIndex];
+          context.state.colorIndex++;
+        }
+        else {
+          color = context.state.removedColors[0];
+          context.state.removedColors.splice(0,1);
+        }
+        context.dispatch("addLayout", {
+          "subject" : value,
+          "color": color,
+          "mobile": payload.mobile
+        });
       }
-      else {
-        color = context.state.removedColors[0];
-        context.state.removedColors.splice(0,1);
-      }
-      context.dispatch("addLayout", {
-        "subject" : subject[i],
-        "color": color,
-        "mobile": payload.mobile
-      });
-    }
+    )
+    console.log("subject:", subject);
     context.commit("myTimeTableUpdate", subject);
   },
   removeMyTimeTable: (context, payload) => {
@@ -183,9 +199,9 @@ const actions = {
   getMyTimeTable: (context, payload) => {
     return new Promise((resolve, reject) => {
       if (payload.token !== undefined) {
-        api.getMyTimetable(payload.token, payload.semester).then(res => {
+        api.getMyTimetable(payload.token, context.state.selectedSemester).then(res => {
           console.log(res.data.timetable);
-          
+
           if (res.data.timetable.length !== 0) {
             let timetable = res.data.timetable;
             let color;
@@ -217,8 +233,8 @@ const actions = {
           }
         })
       } else {
-      } 
-      
+      }
+
     })
   },
 
@@ -241,9 +257,9 @@ const actions = {
         "regular_number": payload.subject.regular_number,
         "isEdited": false,
       }],
-      "semester": payload.semester
+      "semester": context.state.selectedSemester
     }
-    return new Promise((resolve, reject) => {      
+    return new Promise((resolve, reject) => {
       let newSubject = payload.subject;
       for (let i = 0; i < context.state.myTimeTable.length; i++) {
         //중첩 과목 발생
@@ -270,7 +286,7 @@ const actions = {
         color = context.state.removedColors[0];
         context.state.removedColors.splice(0,1);
       }
-      
+
       context.dispatch("addLayout", {
         "subject" : payload.subject,
         "color": color,
@@ -285,7 +301,7 @@ const actions = {
             delete addedSubject.class_title;
             context.commit("myTimeTableAdd", addedSubject);
             console.log(context.state.myTimeTable);
-            context.dispatch("setMyTimeTableGrade");            
+            context.dispatch("setMyTimeTableGrade");
           }
         });
       } else {
@@ -372,7 +388,7 @@ const actions = {
   },
   resetSelectedLayer: (context, payload) => {
     return new Promise((resolve, reject) => {
-      api.getAllLecture(payload.semester).then((res)=> {
+      api.getAllLecture(context.state.selectedSemester).then((res)=> {
         context.commit("selectTimeTableReset");
         context.commit("selectedLayoutReset");
         resolve(true);
@@ -404,7 +420,7 @@ const actions = {
   selectMajor: (context, payload) => {
     return new Promise((resolve, reject)=> {
       context.dispatch("setTotalTimeTable", {
-        semester: payload.semester
+        semester: context.state.selectedSemester
       }).then(()=>{
         let selectedData = [];
         if (payload.major === "전체") {
@@ -424,7 +440,7 @@ const actions = {
   // search Subject
   searchTimeTable: (context, payload) => {
     context.dispatch("setTotalTimeTable", {
-      semester: payload.semester
+      semester: context.state.selectedSemester
     }).then((resolve)=> {
       let searchedData = []
       for (let i = 0; i < context.state.totalTimeTable.length; i++) {
@@ -434,7 +450,7 @@ const actions = {
       }
       if (searchedData.length === 0) {
         context.dispatch("setTotalTimeTable", {
-          semester: payload.semester
+          semester: context.state.selectedSemester
         })
         alert("검색어를 포함하는 과목이 존재하지 않습니다.")
       }
@@ -556,6 +572,12 @@ const mutations = {
   sheetFlagUpdate: (state, data) => {
     state.sheetFlag = data;
   },
+  totalSemesterUpdate: (state, data) => {
+    state.totalSemester = data;
+  },
+  selectedSemesterUpdate: (state, data) => {
+    state.selectedSemester = data;
+  },
 };
 
 const getters = {
@@ -568,6 +590,8 @@ const getters = {
   infoSheetFlag: state => state.infoSheetFlag,
   clickedSubject: state => state.clickedSubject,
   sheetFlag: state => state.sheetFlag,
+  semesters: state => state.totalSemester,
+  selectedSemester: state => state.selectedSemester,
 };
 
 export default {
