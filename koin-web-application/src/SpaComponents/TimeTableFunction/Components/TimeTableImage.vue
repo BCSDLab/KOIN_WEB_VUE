@@ -303,8 +303,9 @@
         return ;
       },
       async selectSemester (semester) {
-        if (this.$session.get("token") === undefined && this.myTimeTable.length) {
-          let timeTableData = this.$cookies.get("timetable") ? this.$cookies.get("timetable") : {};
+        console.log('another semester selected')
+        let timeTableData = this.$cookies.get("timetable") ? this.$cookies.get("timetable") : {};
+        if (this.$session.get("token") === undefined) {
           timeTableData[this.selectedSemester] = this.myTimeTable
           let expireTime = new Date();
           expireTime.setDate(expireTime.getDate() + 3);
@@ -321,9 +322,9 @@
             token: this.$session.get("token"),
             mobile: false,
           })
-        } else if (this.$cookies.get("timetable")[semester] !== undefined) {
+        } else if (timeTableData[semester] !== undefined) {
           await this.$store.dispatch("searchMyTimeTableInfo", {
-            subject: this.$cookies.get("timetable")[semester],
+            subject: timeTableData[semester],
             mobile: false,
           })
           await this.$store.dispatch("setMyTimeTableGrade");
