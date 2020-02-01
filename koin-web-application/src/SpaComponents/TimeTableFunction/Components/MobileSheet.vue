@@ -1,8 +1,6 @@
 <template>
   <div
-    class="mobile-sheet"
-  >
-
+    class="mobile-sheet">
     <div
       class="add-sheet"
       :class="{ 'show': sheetFlag === true}">
@@ -196,22 +194,19 @@
       searchTable() {
         this.nowMajor = "전체";
         this.$store.dispatch("searchTimeTable", {
-          'searchName': this.searchName,
-          'semester': this.setSemester()
+          'searchName': this.searchName
         })
       },
       selectMajor(major) {
         if (this.nowMajor === major) {
           this.nowMajor = "전체";
           this.$store.dispatch("selectMajor", {
-            'major': "전체",
-            'semester': this.setSemester()
+            'major': "전체"
           });
         } else {
           this.nowMajor = major;
           this.$store.dispatch("selectMajor", {
-            'major': major,
-            'semester': this.setSemester()
+            'major': major
           });
         }
       },
@@ -240,7 +235,6 @@
         this.$store.dispatch("addMyTimeTable", {
           'token': this.$session.get("token"),
           'subject': subject,
-          'semester': this.setSemester(),
           'mobile': true
         })
         if (this.$session.get("token") === undefined) {
@@ -314,9 +308,8 @@
 
     },
     mounted() {
-
-    },
-    updated() {
+      this.$store.dispatch("setTotalSemester");
+      this.$store.dispatch("selectSemester", this.setSemester());
     }
   }
 </script>

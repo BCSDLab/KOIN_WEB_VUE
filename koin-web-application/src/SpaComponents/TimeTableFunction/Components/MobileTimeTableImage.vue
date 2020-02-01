@@ -138,6 +138,8 @@
         displayLayout: "displayLayout",
         sheetFlag: "sheetFlag",
         clickedSubject: "clickedSubject",
+        semesters: "semesters",
+        selectedSemester: "selectedSemester",
       }),
       tableStyle() {
         if (this.sheetFlag) {
@@ -266,6 +268,39 @@
           }
         }
         return;
+      },
+      async selectSemester (event) {
+        console.log(event.target.value)
+        await this.$store.dispatch('selectSemester', event.target.value)
+        await this.$store.dispatch('setTotalTimeTable')
+        this.$store.dispatch('initTimeTable')
+        await this.$store.dispatch('resetLayout')
+        await this.$store.dispatch("getMyTimeTable", {
+          token: this.$session.get("token"),
+          mobile: true,
+        })
+      },
+      convert () {
+        this.saveImageFlag = true;
+        this.$store.dispatch("resetSelectedLayer").then((resolve)=>{
+          if(resolve){
+            let node = document.getElementById('table-wrapper');
+            domtoimage.toJpeg(document.getElementById('table-wrapper'), { quality: 0.95, position: "absolute", width: "336px" })
+              .then(function (dataUrl) {
+                var link = document.createElement('a');
+                link.download = 'timetable.png';
+                link.href = dataUrl;
+                link.click();
+              }).then(() => {
+              this.saveImageFlag = false;
+            })
+          }
+        });
+      }
+    },
+    filters: {
+      displaySemester (semester) {
+        return semester.slice(0,4) + '년 ' + semester.slice(4,5) + '학기'
       }
     },
     mounted() {
