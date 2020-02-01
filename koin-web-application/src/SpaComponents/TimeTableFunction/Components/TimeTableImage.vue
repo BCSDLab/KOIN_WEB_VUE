@@ -210,9 +210,7 @@
       },
       convert: function () {
         this.saveImageFlag = true;
-        this.$store.dispatch("resetSelectedLayer", {
-          semester: this.setSemester()
-        }).then((resolve)=>{
+        this.$store.dispatch("resetSelectedLayer").then((resolve)=>{
           if(resolve){
             let node = document.getElementById('my-node');
             domtoimage.toJpeg(document.getElementById('my-node'), { quality: 0.95, position: "absolute" })
@@ -428,7 +426,7 @@
     background-color: #175c8e;
   }
   .loading {
-    padding: 10px 156.5px;
+    padding: 10px 72px;
   }
   #my-node{
     position:relative;

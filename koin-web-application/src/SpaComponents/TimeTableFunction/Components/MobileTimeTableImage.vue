@@ -1,5 +1,41 @@
 <template>
   <div class="timetable">
+    <div class="form-group">
+      <select
+        id="semester"
+        class="semester-dropdown"
+        @change="selectSemester">
+        <option
+          v-for="semester in semesters"
+          :key="semester.id"
+          :value="semester.semester">
+          {{ semester.semester | displaySemester }}
+        </option>
+      </select>
+      <label
+        for="semester"
+        class="dropdown-arrow"/>
+      <div
+        class="image-download"
+        @click="convert">
+        <div
+          class='loading'
+          v-if="saveImageFlag">
+          <Circle2
+            size="25px"
+            stroke="4px"
+            background="transparent"
+            color="white">
+          </Circle2>
+        </div>
+        <template v-if="!saveImageFlag">
+          <img
+            class="download-img"
+            src="http://static.koreatech.in/assets/img/ic-image.png">
+          이미지로 저장하기
+        </template>
+      </div>
+    </div>
     <div
       class="table-wrapper">
       <div
@@ -86,9 +122,14 @@
 
 <script>
   import {mapGetters} from 'vuex';
+  import {Circle2} from 'vue-loading-spinner'
+  import domtoimage from "dom-to-image";
 
   export default {
     name: 'MobileTimeTableImage',
+    components: {
+      Circle2
+    },
     computed: {
       ...mapGetters({
         myTimeTable: 'myTimeTable',
@@ -119,7 +160,8 @@
           width: this.width,
           height: this.height
         },
-        isScrollTop: true
+        isScrollTop: true,
+        saveImageFlag: false
       }
     },
     methods: {
@@ -240,12 +282,62 @@
     width: 100%;
   }
 
+  .form-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
+  .semester-dropdown {
+    width: 151px;
+    height: 31px;
+    margin-right: 9px;
+    padding: 0 20px 0 10px ;
+    font-family: NanumBarunGothic;
+    font-size: 14px;
+    border: 1px solid #d2dae2;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .semester-dropdown::-ms-expand {
+    display: none;
+  }
+  .dropdown-arrow {
+    position: relative;
+    right: 29px;
+    background-color: #bfbfbf;
+    width: 8px;
+    height: 7px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .image-download {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 151px;
+    height: 31px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: #fdfdfd;
+    background-color: #175c8e;
+  }
+  .download-img {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    flex: none;
+    padding-right: 23px;
+  }
+
   .time-table-head {
     width: 100%;
     min-width: 360px;
     background-color: #f1f1f1;
     position: absolute;
-    top: 57px;
+    top: 107px;
     transition: box-shadow .3s;
   }
 
@@ -270,7 +362,7 @@
   }
 
   .time-table-body {
-    margin-top: 24px;
+    padding-top: 24px;
   }
 
   table {

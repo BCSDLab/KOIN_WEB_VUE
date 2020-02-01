@@ -63,7 +63,6 @@
       getMyTimetable: function () {
         this.$store.dispatch("getMyTimeTable", {
           token: this.$session.get("token"),
-          semester: this.setSemester(),
           mobile: true
         })
       },
@@ -73,9 +72,11 @@
       if (window.innerWidth < 577) {
         this.$store.dispatch("initTimeTable");
         this.$store.dispatch("resetLayout");
+        // 학기 받아오기
+        this.$store.dispatch("setTotalSemester");
+        this.$store.dispatch("selectSemester", this.setSemester());
         this.$store.dispatch("setTotalTimeTable", {
-          timeTableData: DB.default,
-          semester: this.setSemester()
+          timeTableData: DB.default
         }).then((resolve, reject) => {
           if (resolve) {
             this.$store.dispatch("resetLayout");
