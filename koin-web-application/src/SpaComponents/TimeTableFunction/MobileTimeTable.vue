@@ -83,10 +83,11 @@
             this.loadingFlag = true;
             if (this.$session.get("token") !== undefined) {
               this.getMyTimetable();
-            } else if (this.$session.get("timetable") !== undefined) {
+            } else if (this.$cookies.get("timetable") !== null) {
+              console.log(this.$cookies.get("timetable"))
               this.$store.dispatch("searchMyTimeTableInfo", {
-                subject: this.$session.get("timetable"),
-                mobile: true
+                subject: this.$cookies.get("timetable")[this.setSemester()],
+                mobile: true,
               })
             }
           }

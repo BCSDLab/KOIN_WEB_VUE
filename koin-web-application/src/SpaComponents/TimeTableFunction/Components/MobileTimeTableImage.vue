@@ -270,15 +270,31 @@
         return;
       },
       async selectSemester (event) {
-        console.log(event.target.value)
+        console.log('another semester selected')
+        if (this.$session.get("token") === undefined && this.myTimeTable.length) {
+          let timeTableData = this.$cookies.get("timetable") ? this.$cookies.get("timetable") : {};
+          timeTableData[this.selectedSemester] = this.myTimeTable
+          let expireTime = new Date();
+          expireTime.setDate(expireTime.getDate() + 3);
+          expireTime.setHours(expireTime.getHours() + 9)
+          this.$cookies.set("timetable", timeTableData, expireTime);
+          console.log("timetable session storage update");
+        }
         await this.$store.dispatch('selectSemester', event.target.value)
         await this.$store.dispatch('setTotalTimeTable')
         this.$store.dispatch('initTimeTable')
         await this.$store.dispatch('resetLayout')
-        await this.$store.dispatch("getMyTimeTable", {
-          token: this.$session.get("token"),
-          mobile: true,
-        })
+        if (this.$session.get("token") !== undefined) {
+          await this.$store.dispatch("getMyTimeTable", {
+            token: this.$session.get("token"),
+            mobile: true,
+          })
+        } else if (this.$cookies.get("timetable")[event.target.value] !== undefined) {
+          await this.$store.dispatch("searchMyTimeTableInfo", {
+            subject: this.$cookies.get("timetable")[event.target.value],
+            mobile: true,
+          })
+        }
       },
       convert () {
         this.saveImageFlag = true;
@@ -308,6 +324,17 @@
     updated() {
       console.log(this.displayLayout);
       console.log(this.selectedLayout);
+    },
+    beforeDestroy () {
+      if (this.$session.get("token") === undefined) {
+        let timetableData = this.$cookies.get("timetable");
+        timetableData[this.selectedSemester] = this.myTimeTable
+        let expireTime = new Date();
+        expireTime.setDate(expireTime.getDate() + 3);
+        expireTime.setHours(expireTime.getHours() + 9)
+        this.$cookies.set("timetable", timetableData, expireTime);
+        console.log("timetable session storage update");
+      }
     }
   }
 </script>
