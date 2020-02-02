@@ -71,7 +71,7 @@
       id="table-body"
       :class="{'my-table': myTimeTableflag}"
       :style="{width: totalTableWidth+ 'px'}"
-			@scroll="scrollEvent">
+      @scroll="scrollEvent">
       <div
         :key="subject.id"
         class="table-row-body"
@@ -132,6 +132,7 @@
         computed: {
             ...mapGetters({
                 myTimeTable: 'myTimeTable',
+                selectedSemester: 'selectedSemester'
             })
         },
         data() {
@@ -237,8 +238,7 @@
                 event.stopPropagation();
                 this.$store.dispatch("addMyTimeTable", {
                     'token': this.$session.get("token"),
-                    'subject': subject,
-                    'semester': this.setSemester()
+                    'subject': subject
                 }).then((res) => {
 
                     if (res.status === 404 ) {
@@ -247,13 +247,6 @@
                         alert("권한이 없습니다.");
                     }
                 })
-                if (this.$session.get("token") === undefined) {
-                    let expireTime = new Date();
-                    expireTime.setDate(expireTime.getDate() + 3);
-                    expireTime.setHours(expireTime.getHours() + 9)
-                    this.$session.set("timetable", this.myTimeTable);
-                    console.log("timetable session storage update");
-                }
             },
             removeSubject: function (index, id) {
                 // 여기서 index는 아래표의 index
@@ -263,13 +256,6 @@
                     'index': index,
                     'id': id,
                 })
-                if (this.$session.get("token") === undefined) {
-                    let expireTime = new Date();
-                    expireTime.setDate(expireTime.getDate() + 3);
-                    expireTime.setHours(expireTime.getHours() + 9)
-                    this.$session.set("timetable", this.myTimeTable);
-                    console.log("timetable session storage update");
-                }
             },
 
             startDrag(event, index) {
@@ -617,6 +603,7 @@
 	/*스크롤 감추기*/
 	* {
 		-ms-overflow-style: none;
+    scrollbar-width: none;
 	}
 
 	::-webkit-scrollbar {

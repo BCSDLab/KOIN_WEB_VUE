@@ -1,24 +1,47 @@
 <template>
   <div>
-    <div
-      class="image-download"
-      @click="convert">
-      <div
-        class='loading'
-        v-if="saveImageFlag">
-        <Circle2
-          size="25px"
-          stroke="4px"
-          background="transparent"
-          color="white">
-        </Circle2>
+    <div class="form-group">
+      <div class="semester-dropdown">
+        <div
+          class="dropdown-button"
+          @click="showSemesterDropdown = !showSemesterDropdown;">{{ selectedSemester | displaySemester }}
+          <img
+            class="dropdown-icon"
+            src="http://static.koreatech.in/assets/img/ic-arrow-up-down.png">
+        </div>
+        <div
+          v-show="showSemesterDropdown"
+          class="dropdown-content">
+          <button
+            :class="{'selected': selectedSemester === semester.semester}"
+            class="dropdown-item"
+            @click="selectSemester(semester.semester)"
+            :key="semester.id"
+            v-for="semester in semesters">
+            {{ semester.semester | displaySemester }}
+          </button>
+        </div>
       </div>
-      <span v-if="!saveImageFlag">
-        <img
-          class="download-img"
-          src="http://static.koreatech.in/assets/img/ic-image.png">
-        이미지로 저장하기
-      </span>
+      <div
+        class="image-download"
+        @click="convert">
+        <div
+          class='loading'
+          v-if="saveImageFlag">
+          <Circle2
+            size="25px"
+            stroke="4px"
+            background="transparent"
+            color="white">
+          </Circle2>
+        </div>
+        <span v-if="!saveImageFlag">
+          <img
+            class="download-img"
+            src="http://static.koreatech.in/assets/img/ic-image.png">
+          이미지로 저장하기
+        </span>
+      </div>
     </div>
     <div id="my-node">
       <table>
@@ -142,7 +165,9 @@
         myTimeTable: 'myTimeTable',
         selectTimeTable: "selectTimeTable",
         selectedLayout: "selectedLayout",
-        displayLayout: "displayLayout"
+        displayLayout: "displayLayout",
+        semesters: "semesters",
+        selectedSemester: "selectedSemester",
       })
     },
     watch: {
@@ -171,6 +196,7 @@
         times: ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"],
         //timeId: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", '14', "15", "16", "17", "18", "19"],
         saveImageFlag: false,
+        showSemesterDropdown: false
       }
     },
     methods: {
@@ -184,9 +210,7 @@
       },
       convert: function () {
         this.saveImageFlag = true;
-        this.$store.dispatch("resetSelectedLayer", {
-          semester: this.setSemester()
-        }).then((resolve)=>{
+        this.$store.dispatch("resetSelectedLayer").then((resolve)=>{
           if(resolve){
             let node = document.getElementById('my-node');
             domtoimage.toJpeg(document.getElementById('my-node'), { quality: 0.95, position: "absolute" })
@@ -273,14 +297,68 @@
               return {
                 'borderBottom': 'none'
               }
-            } 
+            }
           }
         }
         return ;
+      },
+      async selectSemester (semester) {
+        console.log('another semester selected')
+        let timeTableData = this.$cookies.get("timetable") ? this.$cookies.get("timetable") : {};
+        if (this.$session.get("token") === undefined) {
+          timeTableData[this.selectedSemester] = this.myTimeTable
+          let expireTime = new Date();
+          expireTime.setDate(expireTime.getDate() + 3);
+          expireTime.setHours(expireTime.getHours() + 9)
+          this.$cookies.set("timetable", timeTableData, expireTime);
+          console.log("timetable session storage update");
+        }
+        await this.$store.dispatch('selectSemester', semester)
+        await this.$store.dispatch('setTotalTimeTable')
+        this.$store.dispatch('initTimeTable')
+        await this.$store.dispatch('resetLayout')
+        if (this.$session.get("token") !== undefined) {
+          await this.$store.dispatch("getMyTimeTable", {
+            token: this.$session.get("token"),
+            mobile: false,
+          })
+        } else if (timeTableData[semester] !== undefined) {
+          await this.$store.dispatch("searchMyTimeTableInfo", {
+            subject: timeTableData[semester],
+            mobile: false,
+          })
+          await this.$store.dispatch("setMyTimeTableGrade");
+        }
+      }
+    },
+    filters: {
+      displaySemester (semester) {
+        return semester.slice(0,4) + '년 ' + semester.slice(4,5) + '학기'
       }
     },
     created() {
       this.$store.dispatch("resetLayout");
+      window.addEventListener('click', (event) => {
+        if (!event.target.matches('.dropdown-button')) {
+          this.showSemesterDropdown = false;
+        }
+      })
+    },
+    beforeDestroy() {
+      window.removeEventListener('click', (event) => {
+        if (!event.target.matches('.dropdown-button')) {
+          this.showSemesterDropdown = false;
+        }})
+
+      if (this.$session.get("token") === undefined && this.myTimeTable.length) {
+        let timetableData = this.$cookies.get("timetable");
+        timetableData[this.selectedSemester] = this.myTimeTable
+        let expireTime = new Date();
+        expireTime.setDate(expireTime.getDate() + 3);
+        expireTime.setHours(expireTime.getHours() + 9)
+        this.$cookies.set("timetable", timetableData, expireTime);
+        console.log("timetable session storage update");
+      }
     }
   }
 </script>
@@ -291,8 +369,82 @@
     background: red;
   }
 
+  .form-group {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+  }
+  .semester-dropdown {
+    width: 166px;
+    height: 45px;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+  .dropdown-icon {
+    position: relative;
+    right: 8px;
+    bottom: 3px;
+    width: 24px;
+    float: right;
+  }
+  .dropdown-button {
+    border: 1px #d2dae2 solid;
+    width: 144px;
+    height: 30px;
+    padding-top: 13px;
+    text-align: left;
+    padding-left: 20px;
+    float: right;
+    font-size: 14px;
+    color: #252525;
+    cursor: pointer;
+  }
+
+  .dropdown-item {
+    position: relative;
+    width: 166px;
+    top: 10px;
+    border: 1px #d2dae2 solid;
+    margin-top: -1px;
+    display: block;
+    height: 42px;
+    border-collapse: collapse;
+    text-align: left;
+    padding: 10px 20px;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.11), 0 5px 15px 0 rgba(0, 0, 0, 0.08);
+    color: #858585;
+    font-size: 15px;
+    font-family: NanumBarunGothic;
+  }
+  .dropdown-item.selected,
+  .dropdown-item:hover {
+    font-weight: bold;
+    color: #252525;
+  }
+  .dropdown-content {
+    position: absolute;
+    margin-top: 40px;
+    min-width: 160px;
+    max-width: 324px;
+    z-index: 3;
+  }
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {
+    background-color: #ddd
+  }
+
   .image-download {
-    width: 338px;
+    display: inline-block;
+    width: 166px;
     height: 45px;
     line-height: 45px;
     text-align: center;
@@ -300,10 +452,9 @@
     font-size: 15px;
     color: #fdfdfd;
     background-color: #175c8e;
-    margin-bottom: 15px;
   }
   .loading {
-    padding: 10px 156.5px;
+    padding: 10px 72px;
   }
   #my-node{
     position:relative;
