@@ -37,6 +37,7 @@
       </div>
     </div>
     <div
+      id="mobile-table-node"
       class="table-wrapper">
       <div
         class="time-table-head"
@@ -300,8 +301,8 @@
         this.saveImageFlag = true;
         this.$store.dispatch("resetSelectedLayer").then((resolve)=>{
           if(resolve){
-            let node = document.getElementById('table-wrapper');
-            domtoimage.toJpeg(document.getElementById('table-wrapper'), { quality: 0.95, position: "absolute", width: "336px" })
+            let node = document.getElementById('mobile-table-node');
+            domtoimage.toJpeg(document.getElementById('mobile-table-node'), { quality: 0.95, position: "absolute", bgcolor: 'white'})
               .then(function (dataUrl) {
                 var link = document.createElement('a');
                 link.download = 'timetable.png';
@@ -398,7 +399,6 @@
     width: 100%;
     min-width: 360px;
     background-color: #f1f1f1;
-    position: absolute;
     top: 107px;
     transition: box-shadow .3s;
   }
@@ -423,9 +423,6 @@
     width: 9.166%
   }
 
-  .time-table-body {
-    padding-top: 24px;
-  }
 
   table {
     width: 100%;
