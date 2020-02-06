@@ -56,6 +56,9 @@
           <label for="delivery">배달 가능</label>
         </div>
       </div>
+      <div
+        v-if="mobileFlag"
+        class="mobile-list-title" />
       <div class="list">
         <div
           v-for="store of storeDisplayList"
@@ -572,6 +575,7 @@
       margin-left: auto;
       margin-right: auto;
       width: calc(100% - 32px);
+      height: 76px;
     }
 
     .counter {
@@ -582,6 +586,30 @@
 
     .check {
       margin-bottom: 15px;
+    }
+
+    .mobile-list-title {
+      background-color: #e6ecf2;
+      color: #a1a1a1;
+      line-height: 1.46;
+      width: 100%;
+      height: 31px;
+      display: flex;
+      align-items: center;
+    }
+    .mobile-list-title::before {
+      content: "상점목록";
+      font-size: 13px;
+      margin-left: 16px;
+    }
+    .mobile-list-title::after {
+      content: "\00a0\00a0\00a0\00a0 : 이벤트 진행중";
+      font-size: 10px;
+      line-height: 1.5;
+      margin-left: auto;
+      margin-right: 16px;
+      background: url("https://stage-static.koreatech.in/upload/8c621c1a7b4e016debf3a1164b51d96b.png") 0 50% no-repeat;
+      background-size: 10px;
     }
   }
 </style>
