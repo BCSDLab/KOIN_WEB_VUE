@@ -450,6 +450,9 @@ export function uploadLostThumbnail (token, formdata) {
   })
 }
 
+export function getAllSemester () {
+  return axios.get(`${API_PATH}semesters`)
+}
 export function getAllLecture (id) {
   return axios.get(`${API_PATH}lectures/?semester_date=${id}`)
 }
