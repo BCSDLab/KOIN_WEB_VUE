@@ -23,7 +23,7 @@
           <button
             :class="{'shuttle': shuttleChecked, 'no-shuttle': !shuttleChecked }"
             class="select-button">
-            {{ shuttleTimeTableTitle }} 
+            {{ shuttleTimeTableTitle }}
             <img
               class="under-arrow"
               src="https://static.koreatech.in/assets/img/bus_dropdown.png">
@@ -130,28 +130,32 @@
               <td >09:55</td>
             </tr>
             <tr>
-              <td >10:30</td>
-              <td >10:50</td>
+              <td >10:35</td>
+              <td >10:55</td>
             </tr>
             <tr>
-              <td >11:45</td>
-              <td >12:00</td>
+              <td >11:35</td>
+              <td >11:55</td>
             </tr>
             <tr>
-              <td >12:35</td>
-              <td >12:55</td>
+              <td >12:25</td>
+              <td >12:45</td>
             </tr>
             <tr>
-              <td >14:00</td>
-              <td >14:20</td>
+              <td >13:15</td>
+              <td >13:35</td>
+            </tr>
+            <tr>
+              <td >14:05</td>
+              <td >14:25</td>
             </tr>
             <tr>
               <td >15:05</td>
               <td >15:25</td>
             </tr>
             <tr>
-              <td >16:00</td>
-              <td >16:20</td>
+              <td >16:05</td>
+              <td >16:25</td>
             </tr>
             <tr>
               <td >16:55</td>
