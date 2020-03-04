@@ -7,23 +7,27 @@ export default {
     },
     {
       time: 9,
-      minute: 45
+      minute: 35
     },
     {
       time: 10,
-      minute: 30
+      minute: 35
     },
     {
       time: 11,
-      minute: 45
+      minute: 35
     },
     {
       time: 12,
       minute: 35
     },
     {
+      time: 13,
+      minute: 15
+    },
+    {
       time: 14,
-      minute: 0
+      minute: 5
     },
     {
       time: 15,
@@ -31,7 +35,7 @@ export default {
     },
     {
       time: 16,
-      minute: 0
+      minute: 5
     },
     {
       time: 16,
