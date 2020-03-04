@@ -31,7 +31,7 @@
           <div
             id="shuttle-dropdown-content"
             class="dropdown-content"
-            :style="{width: shuttleChecked ? '178px' : '151px'}">
+            :style="{width: shuttleChecked ? '199px' : '151px'}">
             <a
               v-for="(titles, idx) in totalTimeTable"
               :key="titles.key"
@@ -450,7 +450,7 @@
     padding-right: 19px;
     float: left;
     cursor: pointer;
-    width: 153px;
+    width: 178px;
     text-align: left;
     background-color: #ffffff;
   }
@@ -553,7 +553,7 @@
     border-bottom: 1px solid #175c8e;
   }
   .shuttle {
-    width: 180px;
+    width: 201px;
   }
 
   .no-shuttle {
