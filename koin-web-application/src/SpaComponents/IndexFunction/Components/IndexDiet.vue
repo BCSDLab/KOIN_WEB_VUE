@@ -37,8 +37,7 @@
           v-if="selected===0"
           v-for="menus in koreanFood[type]"
           :key="menus.id"
-          :class="{little__letter : (koreanFood[type].length > 8),
-                   no__menus:(koreanFood[type].length === 1)}">
+          :class="{little__letter : (koreanFood[type].length > 8)}">
           {{ menus }}
         </div>
 
@@ -47,8 +46,7 @@
           v-if="selected===1"
           v-for="menus in oneDishFood[type]"
           :key="menus.id"
-          :class="{little__letter : (oneDishFood[type].length > 8),
-                   no__menus:(oneDishFood[type].length === 1)}">
+          :class="{little__letter : (oneDishFood[type].length > 8)}">
           {{ menus }}
         </div>
 
@@ -57,8 +55,7 @@
           v-if="selected===2"
           v-for="menus in westernFood[type]"
           :key="menus.id"
-          :class="{little__letter : (westernFood[type].length > 8),
-                   no__menus:(westernFood[type].length === 1)}">
+          :class="{little__letter : (westernFood[type].length > 8)}">
           {{ menus }}
         </div>
 
@@ -67,10 +64,15 @@
           v-if="selected===3"
           v-for="menus in specialFood[type]"
           :key="menus.id"
-          :class="{little__letter : (specialFood[type].length > 8),
-                   no__menus:(specialFood[type].length === 1)}">
+          :class="{little__letter : (specialFood[type].length > 8)}">
           {{ menus }}
         </div>
+        <div
+          v-if="!this[dietType[selected]].length"
+          class="no__menus">
+          오늘의 식단 정보가 없습니다!
+        </div>
+
       </div>
       <div
         class="show-more"
@@ -90,6 +92,7 @@
     data: function (){
       return {
         allDietList: ['한식','일품식','양식','특식'],
+        dietType: ['koreanFood','westernFood','specialFood','oneDishFood'],
         selected: 0,
         today: new Date(),
         thisYear: new Date().getFullYear(),
@@ -141,10 +144,6 @@
                   this.specialFood.push(this.diets()[i][j].menu)
                 }
               }
-              if(this.returnSize(this.koreanFood) !== i+1) this.koreanFood.push(["오늘의 식단 정보가 없습니다!"]);
-              if(this.returnSize(this.oneDishFood) !== i+1) this.oneDishFood.push(["오늘의 식단 정보가 없습니다!"]);
-              if(this.returnSize(this.westernFood) !== i+1) this.westernFood.push(["오늘의 식단 정보가 없습니다!"]);
-              if(this.returnSize(this.specialFood) !== i+1) this.specialFood.push(["오늘의 식단 정보가 없습니다!"]);
             }
 
             for(let i = 0; i < 3; i++){
@@ -280,6 +279,11 @@
     color: #252525;
     text-align: left;
     margin-bottom: 4px;
+    display: inline-block;
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .menu.little__letter{
