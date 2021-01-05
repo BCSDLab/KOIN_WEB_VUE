@@ -14,7 +14,7 @@
     "stage": "node build/build.stage.js"
   },
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "beautify-scrollbar": "^1.0.8",
     "css-loader": "^0.28.7",
     "deep-assign": "^3.0.0",
